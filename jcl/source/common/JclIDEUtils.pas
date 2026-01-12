@@ -5339,7 +5339,18 @@ var
     I, J: Integer;
     VersionKeyName, PersonalitiesKeyName: string;
     PersonalitiesList: TStrings;
-    Installation: TJclBorRADToolInstallation;
+
+    procedure AddInstallation;
+    var
+      Installation: TJclBorRADToolInstallation;
+    begin
+      Installation := CreateClass.Create(VersionKeyName);
+      if Installation.Valid then
+        FList.Add(Installation)
+      else
+        Installation.Free;
+    end;
+
   begin
     Result := False;
     if RegKeyExists(HKEY_LOCAL_MACHINE, KeyName) and
@@ -5353,9 +5364,7 @@ var
             if Length(Personalities) = 0 then
             begin
               try
-                Installation := CreateClass.Create(VersionKeyName);
-                if Installation.Valid then
-                  FList.Add(Installation);
+                AddInstallation;
               finally
                 Result := True;
               end;
@@ -5372,11 +5381,7 @@ var
                   if PersonalitiesList.IndexOf(Personalities[J]) >= 0 then
                   begin
                     try
-                      Installation := CreateClass.Create(VersionKeyName);
-                      if Installation.Valid then
-                        FList.Add(Installation)
-                      else
-                        Installation.Free;
+                      AddInstallation;
                     finally
                       Result := True;
                     end;
