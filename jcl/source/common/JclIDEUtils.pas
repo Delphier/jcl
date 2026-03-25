@@ -450,6 +450,8 @@ type
     function GetEnvironmentVariables: TStrings; virtual;
     function GetVclIncludeDir(APlatform: TJclBDSPlatform): string; virtual;
     function GetName: string; virtual;
+    function GetMainProductUpdate: string;
+    function GetMainProductUpdateNumber: Integer;
     procedure OutputString(const AText: string);
     function OutputFileDelete(const FileName: string): Boolean;
     procedure SetOutputCallback(const Value: TTextHandler); virtual;
@@ -582,6 +584,8 @@ type
     property ConfigDataLocation: string read FConfigDataLocation;
     property Globals: TStrings read GetGlobals;
     property Name: string read GetName;
+    property MainProductUpdate: string read GetMainProductUpdate;
+    property MainProductUpdateNumber: Integer read GetMainProductUpdateNumber;
     property Palette: TJclBorRADToolPalette read GetPalette;
     property Repository: TJclBorRADToolRepository read GetRepository;
     property RootDir: string read FRootDir;
@@ -2631,6 +2635,16 @@ end;
 function TJclBorRADToolInstallation.GetName: string;
 begin
   Result := Format('%s %d', [RADToolName, IDEVersionNumber]);
+end;
+
+function TJclBorRADToolInstallation.GetMainProductUpdate: string;
+begin
+  Result := ConfigData.ReadString('InstalledUpdates', 'Main Product Update', '');
+end;
+
+function TJclBorRADToolInstallation.GetMainProductUpdateNumber: Integer;
+begin
+  Result := StrToIntDef(StrAfter('Update', MainProductUpdate), 0);
 end;
 
 function TJclBorRADToolInstallation.GetObjFolderName(APlatform: TJclBDSPlatform): string;
