@@ -2826,6 +2826,7 @@ end;
 // Copied from System.pas (_IsClass function)
 
 function JclIsClass(const AnObj: TObject; const AClass: TClass): Boolean;
+{$IF DEFINED(X86ASM) OR DEFINED(X64ASM)}
 asm
         {$IFDEF CPU32}
         // 32 --> EAX AnObj
@@ -2860,6 +2861,11 @@ asm
         MOV     AL,1
 @@exit:
 end;
+{$ELSE}
+begin
+  Result := (AnObj <> nil) and AnObj.InheritsFrom(AClass);
+end;
+{$IFEND}
 
 function JclIsClassByName(const AnObj: TObject; const AClass: TClass): Boolean;
 var
